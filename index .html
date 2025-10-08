@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telelenker - Smart Security System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 450px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .company-header {
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5em;
+            color: var(--secondary);
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .slogan {
+            color: var(--secondary);
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .contact-info {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .language-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+        
+        .login-option {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .login-option:hover {
+            border-color: var(--secondary);
+            background: #f8f9fa;
+        }
+        
+        .login-option.active {
+            border-color: var(--secondary);
+            background: #e3f2fd;
+        }
+        
+        .option-icon {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .login-form {
+            display: none;
+            text-align: left;
+        }
+        
+        .login-form.active {
+            display: block;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .error {
+            color: var(--accent);
+            margin: 10px 0;
+            padding: 10px;
+            background: #ffeaea;
+            border-radius: 5px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 150px;
+            z-index: 100;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+        }
+        
+        .language-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+        
+        .language-option:hover {
+            background: #f5f5f5;
+        }
+        
+        .flag {
+            width: 20px;
+            height: 15px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="company-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">Telelenker</div>
+            </div>
+            <div class="slogan">Smart Security System</div>
+            <div class="contact-info">
+                <div><i class="fas fa-phone"></i> {{ company.phone1 }} | {{ company.phone2 }}</div>
+                <div><i class="fas fa-envelope"></i> {{ company.email }}</div>
+                <div><i class="fas fa-globe"></i> {{ company.website }}</div>
+            </div>
+        </div>
+        
+        <div class="language-selector">
+            <button class="language-btn" onclick="toggleLanguageDropdown()">
+                <i class="fas fa-globe"></i>
+                <span>English</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="language-dropdown" id="languageDropdown">
+                <div class="language-option" onclick="setLanguage('en')">
+                    <img src="https://flagcdn.com/w20/gb.png" class="flag" alt="English">
+                    English
+                </div>
+                <div class="language-option" onclick="setLanguage('de')">
+                    <img src="https://flagcdn.com/w20/de.png" class="flag" alt="German">
+                    Deutsch
+                </div>
+                <div class="language-option" onclick="setLanguage('fr')">
+                    <img src="https://flagcdn.com/w20/fr.png" class="flag" alt="French">
+                    Français
+                </div>
+                <div class="language-option" onclick="setLanguage('tr')">
+                    <img src="https://flagcdn.com/w20/tr.png" class="flag" alt="Turkish">
+                    Türkçe
+                </div>
+                <div class="language-option" onclick="setLanguage('ar')">
+                    <img src="https://flagcdn.com/w20/sa.png" class="flag" alt="Arabic">
+                    العربية
+                </div>
+                <div class="language-option" onclick="setLanguage('ur')">
+                    <img src="https://flagcdn.com/w20/pk.png" class="flag" alt="Urdu">
+                    اردو
+                </div>
+            </div>
+        </div>
+        
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <div class="login-option" onclick="showLoginForm('single')">
+            <div class="option-icon">
+                <i class="fas fa-camera"></i>
+            </div>
+            <h3>View Single Camera</h3>
+            <p>Login for single camera access</p>
+        </div>
+        
+        <div class="login-option" onclick="showLoginForm('admin')">
+            <div class="option-icon">
+                <i class="fas fa-video"></i>
+            </div>
+            <h3>View All Cameras</h3>
+            <p>Admin login for full access</p>
+        </div>
+        
+        <form id="singleForm" class="login-form" action="/login" method="post">
+            <input type="hidden" name="login_type" value="single">
+            <input type="text" name="username" placeholder="Camera Number (1-10)" required>
+            <input type="password" name="password" placeholder="Camera Password" required>
+            <button type="submit">
+                <i class="fas fa-eye"></i> View Camera
+            </button>
+        </form>
+        
+        <form id="adminForm" class="login-form" action="/login" method="post">
+            <input type="hidden" name="login_type" value="admin">
+            <input type="text" name="username" placeholder="Admin Username" required>
+            <input type="password" name="password" placeholder="Admin Password" required>
+            <button type="submit">
+                <i class="fas fa-tv"></i> View All Cameras
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function showLoginForm(type) {
+            // Hide all forms
+            document.getElementById('singleForm').classList.remove('active');
+            document.getElementById('adminForm').classList.remove('active');
+            
+            // Remove active class from all options
+            document.querySelectorAll('.login-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            // Show selected form and mark option as active
+            if (type === 'single') {
+                document.getElementById('singleForm').classList.add('active');
+                event.target.classList.add('active');
+            } else {
+                document.getElementById('adminForm').classList.add('active');
+                event.target.classList.add('active');
+            }
+        }
+        
+        function toggleLanguageDropdown() {
+            document.getElementById('languageDropdown').classList.toggle('show');
+        }
+        
+        function setLanguage(lang) {
+            window.location.href = `/set_language/${lang}`;
+        }
+        
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            if (!e.target.matches('.language-btn') && !e.target.closest('.language-dropdown')) {
+                document.getElementById('languageDropdown').classList.remove('show');
+            }
+        });
+        
+        // Show single form by default
+        showLoginForm('single');
+    </script>
+</body>
+</html>
